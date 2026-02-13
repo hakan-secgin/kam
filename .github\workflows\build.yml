@@ -1,7 +1,8 @@
 name: Flet Android Production Build
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ] # Hem main hem master dallarında çalışır
+  workflow_dispatch: # Manuel başlatma butonu ekler
 
 jobs:
   build:
@@ -17,7 +18,6 @@ jobs:
       - name: Install Flet
         run: |
           pip install flet
-          # Eğer requirements.txt varsa: pip install -r requirements.txt
 
       - name: Setup Java (Android SDK için gerekli)
         uses: actions/setup-java@v4
@@ -25,16 +25,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build Signed APK
+      - name: Build APK
         run: |
+          # İmza gerektirmeden debug APK üretmek için basit komut
           flet build apk --no-interactive
-        env:
-          FLET_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          FLET_ANDROID_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          FLET_ANDROID_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
+          
       - name: Upload Finished APK
         uses: actions/upload-artifact@v4
         with:
-          name: FletApp-Production
+          name: FletApp-Build
           path: build/apk/*.apk
