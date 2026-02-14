@@ -1,0 +1,37 @@
+name: Flet Android Production Build
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Flet
+        run: |
+          pip install flet
+
+      - name: Setup Java (Android SDK için gerekli)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build APK
+        run: |
+          # İmza gerektirmeden debug APK üretmek için basit komut
+          flet build apk
+          
+      - name: Upload Finished APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: FletApp-Build
+          path: build/apk/*.apk
