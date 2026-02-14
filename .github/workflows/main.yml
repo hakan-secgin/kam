@@ -27,8 +27,8 @@ jobs:
 
       - name: Build APK
         run: |
-          # İmza gerektirmeden debug APK üretmek için basit komut
-          flet build apk
+          # Flutter SDK'yı otomatik yüklemek için 'y' ile stdin sağla
+          echo "y" | flet build apk
           
       - name: Upload Finished APK
         uses: actions/upload-artifact@v4
